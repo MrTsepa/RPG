@@ -1,23 +1,13 @@
 import pygame
 from player import Player
+from constants import SIZE
+from levels import level1
 
 
 class Engine:
     def __init__(self):
         self.players = pygame.sprite.Group()
-        self.map = [
-            '***********',
-            '*_________*',
-            '*_________*',
-            '*__*__*___*',
-            '*_________*',
-            '*_________*',
-            '*_________*',
-            '*_________*',
-            '*_________*',
-            '*_________*',
-            '***********'
-        ]
+        self.map = level1
 
     def update_players(self):
         for player in self.players:
@@ -26,6 +16,7 @@ class Engine:
             if self.map[y][x] == '_':
                 player.pos[0] += player.dir[0]
                 player.pos[1] += player.dir[1]
+            player.dir = [0, 0]
 
     def draw(self, screen):
         y = 0
@@ -33,9 +24,13 @@ class Engine:
             x = 0
             for symb in line:
                 if symb == '*':
-                    pygame.draw.rect(screen, (0,250, 0), ((x, y), (30, 30)))
-                x += 30
-            y += 30
+                    pygame.draw.rect(
+                        screen,
+                        (0, 250, 0),
+                        ((x, y), (SIZE, SIZE))
+                    )
+                x += SIZE
+            y += SIZE
         for player in self.players:
-            pygame.draw.rect(screen, (0,250, 0), ((x*30, y*30), (30, 30)))
+            player.draw(screen)
 
