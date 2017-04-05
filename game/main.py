@@ -1,5 +1,6 @@
 #-*-coding: utf8-*-
 import pygame
+from load_images import *
 from engine import Engine
 from player import *
 
@@ -9,9 +10,9 @@ screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 
 engine = Engine()
-hero = Player([1, 1], 100, 1)
-enemy = Player([9, 9], 100, 1)
-sworld = Item([9, 11], 10)
+hero = Player([1, 1], 100, 1, 'empety')
+enemy = Player([9, 9], 100, 1, 'empety')
+sworld = Item([9, 11], 10, sworld_im)
 engine.players.add(hero, enemy)
 engine.items.add(sworld)
 
