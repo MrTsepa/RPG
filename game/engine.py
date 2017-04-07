@@ -13,9 +13,9 @@ class Engine:
         self.items = pygame.sprite.Group()
     def update_players(self):
         for player in self.players:
-            x = player.pos[0] + player.dir[0]
-            y = player.pos[1] + player.dir[1]
-            if self.map[y][x] not in solids:
+            x1 = player.pos[0] + player.dir[0]
+            y1 = player.pos[1] + player.dir[1]
+            if self.map[y1][x1] not in solids:
                 player.pos[0] += player.dir[0]
                 player.pos[1] += player.dir[1]
             player.dir = [0, 0]
@@ -44,11 +44,14 @@ class Engine:
                 if symb == '#':
                     screen.blit(mount_im, [x, y])
                 if symb == '+':
-                    pygame.draw.rect(
-                        screen,
-                        (10, 150, 250),
-                        ((x, y), (SIZE, SIZE))
-                    )
+                    screen.blit(water_im, [x, y])
+                if symb == '=':
+                    screen.blit(wood_im, [x, y])
+                if symb == '-':
+                    screen.blit(sand_im, [x, y])
+                if symb == '^':
+                    screen.blit(tree_desert_im, [x, y])
+
                 x += SIZE
             y += SIZE
         for player in self.players:
