@@ -4,16 +4,20 @@ from load_images import *
 from engine import Engine
 from player import *
 from Camera import *
+from game.animat import param
+
 
 pygame.init()
-size = [2800, 1000]
+size = [5500, 1000]
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 
 engine = Engine()
 hero = Player([1, 1], 1000, 10, 'ss_arr[0]')
 enemy = Player([4, 4], 100, 1, 'empety')
-sworld = Item([9, 11], 10, sworld_im)
+vasa = Player([19, 19], 100, 1, 'empety')
+anton = Player([23, 11], 100, 1, 'empety')
+sworld = Item([35, 37], 10, sworld_im)
 camera = Camera(hero.pos, size)
 engine.players.add(hero, enemy)
 engine.items.add(sworld)
@@ -39,6 +43,16 @@ while running:
     engine.update_players()
     screen.fill((0, 100, 0))
     engine.draw(screen)
+
+
+    class xparam(param):
+        def __init__(self, sprite):
+            self.sprite = sprite
+        def get(self):
+            return self.sprite.pos[0]
+
+        def set(self, value):
+            self.sprite.pos[0] = value
 
     if pygame.sprite.collide_rect(hero, sworld):
         hero.damage += sworld.damage
