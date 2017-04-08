@@ -10,9 +10,26 @@ size = [2800, 1000]
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 
+
+class spritesheet(object):
+    def __init__(self, filename):
+        self.sheet = pygame.image.load(filename).convert_alpha()
+
+    # Load a specific image from a specific rectangle
+    def image_at(self, rectangle, colorkey = None):
+        "Loads image from x,y,x+offset,y+offset"
+        rect = pygame.Rect(rectangle)
+        image = pygame.Surface(rect.size).convert()
+        image.blit(self.sheet, (0, 0), rect)
+        if colorkey is not None:
+            if colorkey is -1:
+                colorkey = image.get_at((0,0))
+            image.set_colorkey(colorkey, pygame.RLEACCEL)
+        return image
+
 engine = Engine()
-hero = Player([1, 1], 1000, 10, 'ss_arr[0]')
-enemy = Player([4, 4], 100, 1, 'empety')
+hero = Player([1, 1], 1000, 10)
+enemy = Player([4, 4], 100, 1)
 sworld = Item([9, 11], 10, sworld_im)
 camera = Camera(hero.pos, size)
 engine.players.add(hero, enemy)
