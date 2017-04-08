@@ -6,13 +6,13 @@ from player import *
 from Camera import *
 
 pygame.init()
-size = [700, 700]
+size = [2800, 1000]
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 
 engine = Engine()
-hero = Player([1, 1], 100, 1, ss_arr[0])
-enemy = Player([9, 9], 100, 1, 'empety')
+hero = Player([1, 1], 1000, 10, 'ss_arr[0]')
+enemy = Player([4, 4], 100, 1, 'empety')
 sworld = Item([9, 11], 10, sworld_im)
 camera = Camera(hero.pos, size)
 engine.players.add(hero, enemy)
@@ -29,7 +29,7 @@ while running:
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_a]:
-        hero.dir = [-2, 0]
+        hero.dir = [-1, 0]
     if keys[pygame.K_d]:
         hero.dir = [1, 0]
     if keys[pygame.K_w]:
