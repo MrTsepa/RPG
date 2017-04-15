@@ -32,6 +32,15 @@ class Engine:
                     if en.health <= 0:
                         en.kill()
 
+
+    def make_spritesheet_array(self, sprsht):
+        ss_arr = []
+        for y in range(0, 80, 20):
+            for x in range(0, 60, 20):
+                image_expl = sprsht.image_at((x, y, 20, 20))
+                ss_arr.append(image_expl)
+        return ss_arr
+
     def draw(self, screen):
         y = 0
         for line in self.map:
@@ -57,4 +66,5 @@ class Engine:
         for player in self.players:
             player.draw(screen)
         for item in self.items:
-            item.draw(screen)
+            if item in self.items:
+                item.draw(screen)
