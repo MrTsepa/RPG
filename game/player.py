@@ -18,10 +18,7 @@ class Player(pygame.sprite.Sprite):
             self.pos[1] * SIZE
         )
         self.rect = pygame.Rect(pixel_pos, [SIZE, SIZE])
-    def update(self):
-        a = 0
-        a += 1
-        self.image = self.images[a]
+
     def draw(self, screen):
         pixel_pos = (
             self.pos[0] * SIZE,
