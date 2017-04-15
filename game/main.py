@@ -8,7 +8,7 @@ from Camera import *
 from spritesheet import *
 
 pygame.init()
-size = [5500, 1000]
+size = [800, 600]
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 
@@ -24,6 +24,8 @@ sworld = Item([9, 11], 10, sworld_im)
 camera = Camera(hero.pos, size)
 engine.players.add(hero, enemy)
 engine.items.add(sworld)
+
+world_image = pygame.Surface((5500, 1000))
 
 running = True
 while running:
@@ -57,7 +59,14 @@ while running:
 
     engine.update_players()
     screen.fill((0, 100, 0))
-    engine.draw(screen)
+    engine.draw(world_image)
+
+    screen.blit(
+        world_image, (
+            min(-hero.pos[0] * SIZE + 400, 0),
+            min(-hero.pos[1] * SIZE + 300, 0)
+        )
+    )
 
     if pygame.sprite.collide_rect(hero, sworld):
         hero.damage += sworld.damage
