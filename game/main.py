@@ -11,15 +11,10 @@ screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 
 class spritesheet(object):
-    def __init__(self, filename):
-        try:
-            self.sheet = pygame.image.load(filename).convert_alpha()
-        except(pygame.error):
-            print('Unable to load spritesheet image:', filename)
-            raise SystemExit
-    # Load a specific image from a specific rectangle
+    def __init__(self, image):
+        self.sheet = image
+
     def image_at(self, rectangle, colorkey = None):
-        "Loads image from x,y,x+offset,y+offset"
         rect = pygame.Rect(rectangle)
         image = pygame.Surface(rect.size).convert()
         image.blit(self.sheet, (0, 0), rect)
@@ -30,7 +25,7 @@ class spritesheet(object):
         return image
 
 engine = Engine()
-ss = spritesheet('images\Hero.png')
+ss = spritesheet(ss_image)
 ss_arr = engine.make_spritesheet_array(ss)
 hero = Player([1, 1], 1000, 10, ss_arr[0], ss_arr, 0)
 enemy = Player([4, 4], 100, 1, ss_arr[0], ss_arr, 0)
