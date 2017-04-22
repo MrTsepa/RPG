@@ -56,6 +56,8 @@ class Engine:
             y += SIZE
         for player in self.players:
             player.draw(screen)
+            if player.health < 0:
+                player.health = 0
         for item in self.items:
             if item in self.items:
                 item.draw(screen)

@@ -6,7 +6,7 @@ from engine import Engine
 from player import *
 from Camera import *
 from spritesheet import *
-
+from Bar import *
 pygame.init()
 size = [800, 600]
 screen = pygame.display.set_mode(size)
@@ -17,10 +17,10 @@ engine = Engine()
 ss = spritesheet(ss_image)
 ss_arr = make_spritesheet_array(ss)
 
-hero = Player([1, 1], 1000, 10, ss_arr[0], ss_arr, 0)
+hero = Player([1, 1], 700, 10, ss_arr[0], ss_arr, 0)
 enemy = Player([4, 4], 100, 1, ss_arr[0], ss_arr, 0)
 sworld = Item([9, 11], 10, sworld_im)
-
+hp_bar = Bar(20, [50, 10], 1)
 camera = Camera(hero.pos, size)
 engine.players.add(hero, enemy)
 engine.items.add(sworld)
@@ -56,7 +56,7 @@ while running:
     if keys[pygame.K_s]:
         hero.dir = [0, 1]
         engine.update_players()
-
+    hp_bar.Set_Bar(hero.health)
     engine.update_players()
     screen.fill((0, 100, 0))
     engine.draw(world_image)
@@ -68,6 +68,7 @@ while running:
         )
     )
 
+    hp_bar.draw_X_Bar([0, 100, 0], screen)
     if pygame.sprite.collide_rect(hero, sworld):
         hero.damage += sworld.damage
         sworld.kill()
