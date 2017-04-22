@@ -25,7 +25,7 @@ camera = Camera(hero.pos, size)
 engine.players.add(hero, enemy)
 engine.items.add(sworld)
 
-world_image = pygame.Surface((5500, 1000))
+world_image = pygame.Surface((9500, 3000))
 
 running = True
 while running:
