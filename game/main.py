@@ -1,26 +1,31 @@
 #-*-coding: utf8-*-
+
 import pygame
 from load_images import *
 from engine import Engine
 from player import *
 from Camera import *
-from game.animat import param
-
+from spritesheet import *
 
 pygame.init()
-size = [5500, 1000]
+size = [800, 600]
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 
 engine = Engine()
-hero = Player([1, 1], 1000, 10, 'ss_arr[0]')
-enemy = Player([4, 4], 100, 1, 'empety')
-vasa = Player([19, 19], 100, 1, 'empety')
-anton = Player([23, 11], 100, 1, 'empety')
-sworld = Item([35, 37], 10, sworld_im)
+
+ss = spritesheet(ss_image)
+ss_arr = make_spritesheet_array(ss)
+
+hero = Player([1, 1], 1000, 10, ss_arr[0], ss_arr, 0)
+enemy = Player([4, 4], 100, 1, ss_arr[0], ss_arr, 0)
+sworld = Item([9, 11], 10, sworld_im)
+
 camera = Camera(hero.pos, size)
 engine.players.add(hero, enemy)
 engine.items.add(sworld)
+
+world_image = pygame.Surface((5500, 1000))
 
 running = True
 while running:
@@ -30,29 +35,38 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 hero.kicking = True
-
+            if event.key == pygame.K_w:
+                hero.image = hero.images[9]
+            if event.key == pygame.K_s:
+                hero.image = hero.images[0]
+            if event.key == pygame.K_a:
+                hero.image = hero.images[3]
+            if event.key == pygame.K_d:
+                hero.image = hero.images[6]
     keys = pygame.key.get_pressed()
     if keys[pygame.K_a]:
         hero.dir = [-1, 0]
+        engine.update_players()
     if keys[pygame.K_d]:
         hero.dir = [1, 0]
+        engine.update_players()
     if keys[pygame.K_w]:
         hero.dir = [0, -1]
+        engine.update_players()
     if keys[pygame.K_s]:
         hero.dir = [0, 1]
+        engine.update_players()
+
     engine.update_players()
     screen.fill((0, 100, 0))
-    engine.draw(screen)
+    engine.draw(world_image)
 
-
-    class xparam(param):
-        def __init__(self, sprite):
-            self.sprite = sprite
-        def get(self):
-            return self.sprite.pos[0]
-
-        def set(self, value):
-            self.sprite.pos[0] = value
+    screen.blit(
+        world_image, (
+            min(-hero.pos[0] * SIZE + 400, 0),
+            min(-hero.pos[1] * SIZE + 300, 0)
+        )
+    )
 
     if pygame.sprite.collide_rect(hero, sworld):
         hero.damage += sworld.damage

@@ -3,7 +3,7 @@ from constants import SIZE
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, health, damage, image):
+    def __init__(self, pos, health, damage, image, images, start_frame):
         pygame.sprite.Sprite.__init__(self)
         self.pos = pos
         self.image = image
@@ -11,7 +11,8 @@ class Player(pygame.sprite.Sprite):
         self.dir = [0, 0]
         self.kicking = False
         self.damage = damage
-
+        self.images = images
+        self.start_frame = start_frame
         pixel_pos = (
             self.pos[0] * SIZE,
             self.pos[1] * SIZE
@@ -23,11 +24,9 @@ class Player(pygame.sprite.Sprite):
             self.pos[0] * SIZE,
             self.pos[1] * SIZE
         )
-        pygame.draw.rect(
-            screen,
-            (255, 255, 255),
-            (pixel_pos, (SIZE, SIZE))
-        )
+        screen.blit(self.image, pixel_pos)
+
+
 class Item(pygame.sprite.Sprite):
     def __init__(self, pos, damage, image):
         pygame.sprite.Sprite.__init__(self)

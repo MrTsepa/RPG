@@ -57,4 +57,5 @@ class Engine:
         for player in self.players:
             player.draw(screen)
         for item in self.items:
-            item.draw(screen)
+            if item in self.items:
+                item.draw(screen)
