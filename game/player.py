@@ -9,6 +9,7 @@ class Player(pygame.sprite.Sprite):
         self.image = image
         self.health = health
         self.dir = [0, 0]
+        self.direction = 'down'
         self.kicking = False
         self.damage = damage
         self.images = images

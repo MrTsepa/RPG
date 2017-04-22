@@ -58,6 +58,14 @@ class Engine:
             player.draw(screen)
             if player.health < 0:
                 player.health = 0
+            if player.direction == 'up':
+                player.image = player.images[9]
+            if player.direction == 'down':
+                player.image = player.images[0]
+            if player.direction == 'left':
+                player.image = player.images[3]
+            if player.direction == 'right':
+                player.image = player.images[6]
         for item in self.items:
             if item in self.items:
                 item.draw(screen)

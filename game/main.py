@@ -35,26 +35,22 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 hero.kicking = True
-            if event.key == pygame.K_w:
-                hero.image = hero.images[9]
-            if event.key == pygame.K_s:
-                hero.image = hero.images[0]
-            if event.key == pygame.K_a:
-                hero.image = hero.images[3]
-            if event.key == pygame.K_d:
-                hero.image = hero.images[6]
     keys = pygame.key.get_pressed()
     if keys[pygame.K_a]:
         hero.dir = [-1, 0]
+        hero.direction = 'left'
         engine.update_players()
     if keys[pygame.K_d]:
         hero.dir = [1, 0]
+        hero.direction = 'right'
         engine.update_players()
     if keys[pygame.K_w]:
         hero.dir = [0, -1]
+        hero.direction = 'up'
         engine.update_players()
     if keys[pygame.K_s]:
         hero.dir = [0, 1]
+        hero.direction = 'down'
         engine.update_players()
     hp_bar.Set_Bar(hero.health)
     engine.update_players()
