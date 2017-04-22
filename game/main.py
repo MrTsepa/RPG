@@ -12,13 +12,15 @@ size = [800, 600]
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 
+font = pygame.font.Font(None, 20)
+
 engine = Engine()
 
 ss = spritesheet(ss_image)
 ss_arr = make_spritesheet_array(ss)
 
-hero = Player([1, 1], 700, 10, ss_arr[0], ss_arr, 0)
-enemy = Player([4, 4], 100, 1, ss_arr[0], ss_arr, 0)
+hero = Player([1, 1], 700, ss_arr[0], ss_arr, 0)
+enemy = Player([4, 4], 100, ss_arr[0], ss_arr, 0)
 sworld = Item([9, 11], 10, sworld_im)
 hp_bar = Bar(20, [50, 10], 1)
 camera = Camera(hero.pos, size)
@@ -34,29 +36,28 @@ while running:
             running = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                hero.kicking = True
+                engine.make_kick(hero)
+            if event.key == pygame.K_e:
+                engine.take_item(hero)
+
     keys = pygame.key.get_pressed()
     if keys[pygame.K_a]:
-        hero.dir = [-1, 0]
-        hero.direction = 'left'
-        engine.update_players()
+        hero.vel = [-1, 0]
+        hero.direction = [-1, 0]
     if keys[pygame.K_d]:
-        hero.dir = [1, 0]
-        hero.direction = 'right'
-        engine.update_players()
+        hero.vel = [1, 0]
+        hero.direction = [1, 0]
     if keys[pygame.K_w]:
-        hero.dir = [0, -1]
-        hero.direction = 'up'
-        engine.update_players()
+        hero.vel = [0, -1]
+        hero.direction = [0, -1]
     if keys[pygame.K_s]:
-        hero.dir = [0, 1]
-        hero.direction = 'down'
-        engine.update_players()
-    hp_bar.Set_Bar(hero.health)
+        hero.vel = [0, 1]
+        hero.direction = [0, 1]
+    hp_bar.set_bar(hero.health)
     engine.update_players()
+
     screen.fill((0, 100, 0))
     engine.draw(world_image)
-
     screen.blit(
         world_image, (
             min(-hero.pos[0] * SIZE + 400, 0),
@@ -64,10 +65,17 @@ while running:
         )
     )
 
-    hp_bar.draw_X_Bar([0, 100, 0], screen)
-    if pygame.sprite.collide_rect(hero, sworld):
-        hero.damage += sworld.damage
-        sworld.kill()
+    screen.blit(
+        font.render(
+            'Damage: ' + str(hero.get_damage()),
+            True,
+            [255, 255, 255]
+        ),
+        (700, 500)
+    )
+
+
+    hp_bar.draw_x_bar([0, 100, 0], screen)
     pygame.display.flip()
     clock.tick(10)
 pygame.quit()
