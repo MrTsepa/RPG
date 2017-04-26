@@ -1,5 +1,6 @@
 import pygame
-from constants import SIZE
+
+from data.constants import SIZE
 
 
 class Player(pygame.sprite.Sprite):
@@ -10,7 +11,7 @@ class Player(pygame.sprite.Sprite):
         self.health = health
         self.vel = [0, 0]
         self.direction = [0, 1]
-        self.items = []
+        self.h_items = []                     #h - hand
         self.images = images
         self.start_frame = start_frame
         pixel_pos = (
@@ -20,7 +21,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = pygame.Rect(pixel_pos, [SIZE, SIZE])
 
     def get_damage(self):
-        return 2 + sum([item.damage for item in self.items])
+        return 2 + sum([item.damage for item in self.h_items])
 
     def draw(self, screen):
         pixel_pos = (

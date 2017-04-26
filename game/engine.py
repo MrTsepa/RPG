@@ -1,9 +1,7 @@
-import pygame
+from data.constants import SIZE
+from data.constants import solids
+from data.levels import level1
 from load_images import *
-from player import Player
-from constants import SIZE
-from constants import solids
-from levels import level1
 
 
 class Engine:
@@ -29,7 +27,7 @@ class Engine:
             player.vel = [0, 0]
 
     def make_kick(self, player):
-        print(player.direction)
+        print("Punch! kiking by player in " + str(player.pos) )
         for target in self.players:
             if (
                 player.pos[0] + player.direction[0],
@@ -51,7 +49,7 @@ class Engine:
                 item.pos[0],
                 item.pos[1]
             ):
-                player.items.append(item)
+                player.h_items.append(item)
                 item.kill()
 
     def draw(self, screen):
