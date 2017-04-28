@@ -1,4 +1,6 @@
 #-*-coding: utf8-*-
+import os
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (100, 50)
 
 from data.Bar import *
 from data.Camera import *
