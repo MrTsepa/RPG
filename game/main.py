@@ -1,7 +1,5 @@
 #-*-coding: utf8-*-
 import os
-os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (100, 50)
-
 from data.Bar import *
 from data.Camera import *
 from data.player import *
@@ -10,6 +8,9 @@ from engine import Engine
 from load_images import *
 from data.AI import *
 from data.Paths import *
+
+
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (100, 50)
 
 pygame.init()
 size = [800, 600]
