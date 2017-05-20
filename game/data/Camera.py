@@ -21,3 +21,4 @@ class Camera:
         new_image_pos[0] = image_pos[0] - (sprite_image.get_width()/2)
         new_image_pos[1] = image_pos[1] - (sprite_image.get_height()/2)
         screen.blit(sprite_image, new_image_pos)
+    a= 0

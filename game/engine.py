@@ -1,9 +1,7 @@
-import pygame
-from  load_images import *
-from player import Player
-from constants import SIZE
-from constants import solids
-from levels import level1
+from data.constants import SIZE
+from data.constants import solids
+from data.levels import level1
+from load_images import *
 
 
 class Engine:
@@ -11,26 +9,48 @@ class Engine:
         self.players = pygame.sprite.Group()
         self.map = level1
         self.items = pygame.sprite.Group()
+
     def update_players(self):
+        player_poses = [p.pos for p in self.players]
+        item_poses = [p.pos for p in self.items]
         for player in self.players:
-            x1 = player.pos[0] + player.dir[0]
-            y1 = player.pos[1] + player.dir[1]
-            if self.map[y1][x1] not in solids:
-                player.pos[0] += player.dir[0]
-                player.pos[1] += player.dir[1]
-            player.dir = [0, 0]
-            if player.kicking:
-                for en in self.players:
-                    if abs(en.pos[0] - player.pos[0]) == 1:
-                        if abs(en.pos[1] - player.pos[1]) == 0:
-                            en.health -= player.damage
-                            player.kicking = False
-                    if abs(en.pos[0] - player.pos[0]) == 0:
-                        if abs(en.pos[1] - player.pos[1]) == 1:
-                            en.health -= player.damage
-                            player.kicking = False
-                    if en.health <= 0:
-                        en.kill()
+            x1 = player.pos[0] + player.vel[0]
+            y1 = player.pos[1] + player.vel[1]
+            if self.map[y1][x1] in solids:
+                continue
+            if [x1, y1] in player_poses:
+                continue
+            if [x1, y1] in item_poses:
+                continue
+            player.pos[0] += player.vel[0]
+            player.pos[1] += player.vel[1]
+            player.vel = [0, 0]
+
+    def make_kick(self, player):
+        print("Punch! kiking by player in " + str(player.pos) )
+        for target in self.players:
+            if (
+                player.pos[0] + player.direction[0],
+                player.pos[1] + player.direction[1]
+            ) == (
+                target.pos[0],
+                target.pos[1]
+            ):
+                target.health -= player.get_damage()
+                if target.health <= 0:
+                    target.kill()
+
+    def take_item(self, player):
+        for item in self.items:
+            if (
+                player.pos[0] + player.direction[0],
+                player.pos[1] + player.direction[1]
+            ) == (
+                item.pos[0],
+                item.pos[1]
+            ):
+                player.h_items.append(item)
+                item.kill()
 
     def draw(self, screen):
         y = 0
@@ -57,5 +77,4 @@ class Engine:
         for player in self.players:
             player.draw(screen)
         for item in self.items:
-            if item in self.items:
-                item.draw(screen)
+            item.draw(screen)
