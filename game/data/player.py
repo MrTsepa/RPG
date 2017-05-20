@@ -1,18 +1,25 @@
 import pygame
-
+from enum import Enum
 from data.constants import SIZE
 
 
+class Ability(Enum):
+    Fire = 1
+    Ice = 2
+    Heal = 3
+
+
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, health, image, images, start_frame):
+    def __init__(self, pos, health, image, images, start_frame, abilities):
         pygame.sprite.Sprite.__init__(self)
         self.pos = pos
         self.image = image
         self.health = health
         self.vel = [0, 0]
-        self.direction = [0, 1]
-        self.h_items = []                     #h - hand
+        self.direction = [1, 0]
+        self.h_items = []  # h - hand
         self.images = images
+        self.abilities = abilities
         self.start_frame = start_frame
         pixel_pos = (
             self.pos[0] * SIZE,
@@ -40,11 +47,45 @@ class Player(pygame.sprite.Sprite):
 
 
 class Item(pygame.sprite.Sprite):
-    def __init__(self, pos, damage, image):
+    def __init__(self, pos, image):
         pygame.sprite.Sprite.__init__(self)
         self.pos = pos
+        self.image = image
+        pixel_pos = (
+            self.pos[0] * SIZE,
+            self.pos[1] * SIZE
+        )
+        self.rect = pygame.Rect(pixel_pos, [SIZE, SIZE])
+
+    def draw(self, screen):
+        pixel_pos = (
+            self.pos[0] * SIZE,
+            self.pos[1] * SIZE
+        )
+        screen.blit(self.image, pixel_pos)
+
+
+class Scrolls(Item):
+    def __init__(self, pos, image):
+        Item.__init__(self, pos, image)
+
+
+class Weapon(Item):
+    def __init__(self, pos, damage, image):
+        Item.__init__(self, pos, image)
+        self.damage = damage
+
+
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self, player, image, damage, direction, vel=1):
+        pygame.sprite.Sprite.__init__(self)
+        self.pos = list(player.pos)
         self.damage = damage
         self.image = image
+        self.vel = vel
+        self.direction = direction
+        self.shooter = player
+
         pixel_pos = (
             self.pos[0] * SIZE,
             self.pos[1] * SIZE

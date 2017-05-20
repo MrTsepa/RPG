@@ -22,10 +22,11 @@ ai = PathFinder()
 ss = spritesheet(ss_image)
 ss_arr = make_spritesheet_array(ss)
 
-hero = Player([1, 1], 700, ss_arr[0], ss_arr, 0)
-enemy = Player([4, 4], 100, ss_arr[0], ss_arr, 0)
-enemy1 = Player([113, 8], 100, ss_arr[0], ss_arr, 0)
-sworld = Item([9, 11], 10, sworld_im)
+hero = Player([1, 1], 700, ss_arr[0], ss_arr, 0, [Ability.Fire])
+enemy = Player([2, 1], 20, ss_arr[0], ss_arr, 0, [])
+enemy1 = Player([113, 8], 100, ss_arr[0], ss_arr, 0, [])
+sworld = Weapon([9, 11], 10, sworld_im)
+Heal_scroll = Scrolls([9, 0], sworld_im)  # TODO: Make image of Heal_scroll
 hp_bar = ClewerBar(10, [130, 545], 166, hero.health)
 mana_bar = ClewerBar(9, [130, 560], 159, 100)
 camera = Camera(hero.pos, size)
@@ -55,25 +56,27 @@ while running:
                 hero.direction = [1, 0]
             if event.key == pygame.K_LEFT:
                 hero.direction = [-1, 0]
+            if event.key == pygame.K_1:
+                engine.use_ability(hero, Ability.Fire)
     if enemy in engine.players:
         engine.make_kick(enemy)
     keys = pygame.key.get_pressed()
     if keys[pygame.K_a]:
         hero.vel = [-1, 0]
         hero.direction = [-1, 0]
-        engine.update_players()
+        # engine.update_players()
     if keys[pygame.K_d]:
         hero.vel = [1, 0]
         hero.direction = [1, 0]
-        engine.update_players()
+        # engine.update_players()
     if keys[pygame.K_w]:
         hero.vel = [0, -1]
         hero.direction = [0, -1]
-        engine.update_players()
+        # engine.update_players()
     if keys[pygame.K_s]:
         hero.vel = [0, 1]
         hero.direction = [0, 1]
-        engine.update_players()
+        # engine.update_players()
     hp_bar.update_bar(hero.health)
     mana_bar.update_bar(100)
     engine.update_players()

@@ -2,14 +2,14 @@ from data.constants import SIZE
 from data.constants import solids
 from data.levels import level1
 from load_images import *
-
+from data.player import *
 
 class Engine:
     def __init__(self):
         self.players = pygame.sprite.Group()
         self.map = level1
         self.items = pygame.sprite.Group()
-
+        self.bullets = pygame.sprite.Group()
     def update_players(self):
         player_poses = [p.pos for p in self.players]
         item_poses = [p.pos for p in self.items]
@@ -25,6 +25,19 @@ class Engine:
             player.pos[0] += player.vel[0]
             player.pos[1] += player.vel[1]
             player.vel = [0, 0]
+            #bullet_hit = pygame.sprite.spritecollideany(player, self.bullets)
+            #if bullet_hit is not None:
+            #    if player != bullet_hit.shooter:
+            #        bullet_hit.kill()
+            #        player.health -= bullet_hit.damage
+            for bullet in self.bullets:
+                if player != bullet.shooter:
+                    if player.pos[0] == bullet.pos[0] and player.pos[1] == bullet.pos[1]:
+                        bullet.kill()
+                        player.health -= bullet.damage
+        for bullet in self.bullets:
+            bullet.pos[0] += bullet.vel * bullet.direction[0]
+            bullet.pos[1] += bullet.vel * bullet.direction[1]
 
     def make_kick(self, player):
         print("Punch! kiking by player in " + str(player.pos) )
@@ -37,8 +50,11 @@ class Engine:
                 target.pos[1]
             ):
                 target.health -= player.get_damage()
-                if target.health <= 0:
-                    target.kill()
+            if target.health <= 0:
+                target.kill()
+
+    def shoot(self, bullet):
+        self.bullets.add(bullet)
 
     def take_item(self, player):
         for item in self.items:
@@ -51,6 +67,12 @@ class Engine:
             ):
                 player.h_items.append(item)
                 item.kill()
+
+
+    def use_ability(self, player, type):
+        if type == Ability.Fire:
+            bullet = Bullet(player, sworld_im, 10, player.direction)           # TODO: Fire image
+            self.shoot(bullet)
 
     def draw(self, screen):
         y = 0
@@ -78,3 +100,5 @@ class Engine:
             player.draw(screen)
         for item in self.items:
             item.draw(screen)
+        for bullet in self.bullets:
+            bullet.draw(screen)
