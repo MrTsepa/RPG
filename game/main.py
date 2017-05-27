@@ -1,39 +1,42 @@
 #-*-coding: utf8-*-
-import pygame
-from load_images import *
+import os
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (100, 50)
+
+from data.Bar import *
+from data.Camera import *
+from data.player import *
+from data.spritesheet import *
 from engine import Engine
-from player import *
-from Camera import *
+from load_images import *
+from data.AI import *
+from data.Paths import *
 
 pygame.init()
-size = [2800, 1000]
+size = [800, 600]
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 
-
-class spritesheet(object):
-    def __init__(self, filename):
-        self.sheet = pygame.image.load(filename).convert_alpha()
-
-    # Load a specific image from a specific rectangle
-    def image_at(self, rectangle, colorkey = None):
-        "Loads image from x,y,x+offset,y+offset"
-        rect = pygame.Rect(rectangle)
-        image = pygame.Surface(rect.size).convert()
-        image.blit(self.sheet, (0, 0), rect)
-        if colorkey is not None:
-            if colorkey is -1:
-                colorkey = image.get_at((0,0))
-            image.set_colorkey(colorkey, pygame.RLEACCEL)
-        return image
-
 engine = Engine()
-hero = Player([1, 1], 1000, 10)
-enemy = Player([4, 4], 100, 1)
-sworld = Item([9, 11], 10, sworld_im)
+ai = PathFinder()
+
+ss = spritesheet(ss_image)
+ss_arr = make_spritesheet_array(ss)
+
+hero = Player([1, 1], 700, ss_arr[0], ss_arr, 0, [Ability.Fire])
+enemy = Player([2, 1], 20, ss_arr[0], ss_arr, 0, [])
+enemy1 = Player([113, 8], 100, ss_arr[0], ss_arr, 0, [])
+sworld = Weapon([9, 11], 10, sworld_im)
+Heal_scroll = Scrolls([9, 0], sworld_im)  # TODO: Make image of Heal_scroll
+hp_bar = ClewerBar(10, [130, 545], 166, hero.health)
+mana_bar = ClewerBar(9, [130, 560], 159, 100)
 camera = Camera(hero.pos, size)
-engine.players.add(hero, enemy)
+enemies = pygame.sprite.Group()
+enemies.add(enemy, enemy1)
+
+engine.players.add(hero, enemies)
 engine.items.add(sworld)
+
+world_image = pygame.Surface((7500, 3000))
 
 running = True
 while running:
@@ -41,22 +44,55 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_e:
+                engine.take_item(hero)
             if event.key == pygame.K_SPACE:
-                hero.kicking = True
-
+                engine.make_kick(hero)
+            if event.key == pygame.K_UP:
+                hero.direction = [0, -1]
+            if event.key == pygame.K_DOWN:
+                hero.direction = [0, 1]
+            if event.key == pygame.K_RIGHT:
+                hero.direction = [1, 0]
+            if event.key == pygame.K_LEFT:
+                hero.direction = [-1, 0]
+            if event.key == pygame.K_1:
+                engine.use_ability(hero, Ability.Fire)
+    if enemy in engine.players:
+        engine.make_kick(enemy)
     keys = pygame.key.get_pressed()
     if keys[pygame.K_a]:
-        hero.dir = [-1, 0]
+        hero.vel = [-1, 0]
+        hero.direction = [-1, 0]
+        # engine.update_players()
     if keys[pygame.K_d]:
-        hero.dir = [1, 0]
+        hero.vel = [1, 0]
+        hero.direction = [1, 0]
+        # engine.update_players()
     if keys[pygame.K_w]:
-        hero.dir = [0, -1]
+        hero.vel = [0, -1]
+        hero.direction = [0, -1]
+        # engine.update_players()
     if keys[pygame.K_s]:
-        hero.dir = [0, 1]
+        hero.vel = [0, 1]
+        hero.direction = [0, 1]
+        # engine.update_players()
+    hp_bar.update_bar(hero.health)
+    mana_bar.update_bar(100)
     engine.update_players()
     screen.fill((0, 100, 0))
-    engine.draw(screen)
-
+    engine.draw(world_image)
+    ai.path_to_player(hero, enemy)
+    screen.blit(
+        world_image, (
+            min(-hero.pos[0] * SIZE + 400, 0),
+            min(-hero.pos[1] * SIZE + 300, 0)
+        )
+    )
+    screen.blit(hero_im, [10, 510])
+    hp_bar.draw_X_Bar([0, 200, 0], screen)
+    mana_bar.draw_X_Bar([0, 0, 200], screen)
+    screen.blit(hero_hp_bar, [0, 500])
     if pygame.sprite.collide_rect(hero, sworld):
         hero.damage += sworld.damage
         sworld.kill()

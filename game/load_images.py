@@ -1,17 +1,20 @@
+import os
 import pygame
 
-tree_im = pygame.image.load('images\sum_tree.png')
-grass_im = pygame.image.load('images\Grass.png')
-mount_im = pygame.image.load('images\mount.png')
-sworld_im = pygame.image.load('images\Sworld.png')
-wood_im = pygame.image.load('images\wood.png')
-water_im = pygame.image.load('images\Water.png')
-sand_im = pygame.image.load('images\sand.png')
-tree_desert_im = pygame.image.load('images\des_tree.png')
-from main import spritesheet
-ss = spritesheet("images\Hero.png")
-ss_arr = []
-for y in range(0, 80, 20):
-    for x in range(0, 60, 20):
-        image_expl = ss.image_at((x, y, 20, 20))
-        ss_arr.append(image_expl)
+IMAGES_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'recourses/images')
+print(IMAGES_DIR)
+
+size = [2800, 1000]
+screen = pygame.display.set_mode(size)
+
+tree_im = pygame.image.load(os.path.join(IMAGES_DIR, 'sum_tree.png')).convert_alpha()
+grass_im = pygame.image.load(os.path.join(IMAGES_DIR, 'Grass.png')).convert_alpha()
+mount_im = pygame.image.load(os.path.join(IMAGES_DIR, 'mount.png')).convert_alpha()
+sworld_im = pygame.image.load(os.path.join(IMAGES_DIR, 'Sworld.png')).convert_alpha()
+wood_im = pygame.image.load(os.path.join(IMAGES_DIR, 'wood.png')).convert_alpha()
+water_im = pygame.image.load(os.path.join(IMAGES_DIR, 'Water.png')).convert_alpha()
+sand_im = pygame.image.load(os.path.join(IMAGES_DIR, 'sand.png')).convert_alpha()
+tree_desert_im = pygame.image.load(os.path.join(IMAGES_DIR, 'des_tree.png')).convert_alpha()
+hero_hp_bar =  pygame.image.load(os.path.join(IMAGES_DIR, 'HeroBar.png')).convert_alpha()
+hero_im =  pygame.image.load(os.path.join(IMAGES_DIR, 'Hero_im.png')).convert_alpha()
+ss_image = pygame.image.load(os.path.join(IMAGES_DIR, 'Hero.png')).convert_alpha()
