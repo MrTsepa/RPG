@@ -14,33 +14,44 @@ class Engine:
         player_poses = [p.pos for p in self.players]
         item_poses = [p.pos for p in self.items]
         for player in self.players:
-            x1 = player.pos[0] + player.vel[0]
-            y1 = player.pos[1] + player.vel[1]
+            x1 = (player.pos[0] // SIZE) + player.vel[0]
+            y1 = (player.pos[1] // SIZE) + player.vel[1]
             if self.map[y1][x1] in solids:
                 continue
             if [x1, y1] in player_poses:
                 continue
             if [x1, y1] in item_poses:
                 continue
-            player.pos[0] += player.vel[0]
-            player.pos[1] += player.vel[1]
-            player.vel = [0, 0]
+
             #bullet_hit = pygame.sprite.spritecollideany(player, self.bullets)
             #if bullet_hit is not None:
             #    if player != bullet_hit.shooter:
             #        bullet_hit.kill()
             #        player.health -= bullet_hit.damage
-            for bullet in self.bullets:
-                if player != bullet.shooter:
-                    if player.pos[0] == bullet.pos[0] and player.pos[1] == bullet.pos[1]:
-                        bullet.kill()
-                        player.health -= bullet.damage
+            if player.debuff == 'iced':
+                player.vel = [0, 0]
+            first_point_X = player.pos[0] //SIZE
+            first_point_Y = player.pos[0] //SIZE
+            if player.pos [1] // 20 != first_point_X + 1:
+                player.pos[0] += player.vel[0]
+            if player.pos[1] // 20 != first_point_Y + 1:
+                player.pos[1] += player.vel[1]
+            if player.pos [1] // 20 != first_point_X - 1:
+                player.pos[0] += player.vel[0]
+            if player.pos[1] // 20 != first_point_Y - 1:
+                player.pos[1] += player.vel[1]
         for bullet in self.bullets:
-            bullet.pos[0] += bullet.vel * bullet.direction[0]
-            bullet.pos[1] += bullet.vel * bullet.direction[1]
-
+            bullet.pos[0] += bullet.direction[0] * bullet.vel
+            bullet.pos[1] += bullet.direction[1] * bullet.vel
+            for player in self.players:
+                if player.pos[0] == bullet.pos[0] and player.pos[1] == bullet.pos[1]:
+                    if player != bullet.shooter:
+                        bullet.kill()
+                        if bullet.speciffic == 'damage':
+                            player.health -= bullet.damage
+                        if bullet.speciffic == 'ice':
+                            player.debuff = 'iced'
     def make_kick(self, player):
-        print("Punch! kiking by player in " + str(player.pos) )
         for target in self.players:
             if (
                 player.pos[0] + player.direction[0],
@@ -71,8 +82,13 @@ class Engine:
 
     def use_ability(self, player, type):
         if type == Ability.Fire:
-            bullet = Bullet(player, sworld_im, 10, player.direction)           # TODO: Fire image
+            bullet = Bullet(player, sworld_im, 5, player.direction, 'damage')           # TODO: Fire image
             self.shoot(bullet)
+        if type == Ability.Ice:
+            bullet = Bullet(player, water_im, 5, player.direction, 'ice')           # TODO: Ice image
+            self.shoot(bullet)
+        if type == Ability.Heal:
+            player.health += 50
 
     def draw(self, screen):
         y = 0
@@ -80,6 +96,7 @@ class Engine:
             x = 0
             for symb in line:
                 if symb == '*':
+                    screen.blit(grass_im, [x, y])
                     screen.blit(tree_im, [x, y])
                 if symb == '_':
                     screen.blit(grass_im, [x, y])

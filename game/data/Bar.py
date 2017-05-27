@@ -22,6 +22,7 @@ class ClewerBar:
         self.height = height
         self.value = 0
         self.pos = pos
+        self.true_vaule = value
         self.add = true_lenght / value
 
     def update_bar(self, value):
