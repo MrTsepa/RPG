@@ -10,7 +10,6 @@ from data.spritesheet import *
 from engine import Engine
 from load_images import *
 from data.AI import *
-from data.Paths import *
 from data.Fractions import *
 
 
@@ -39,6 +38,7 @@ engine.players.add(hero, enemies)
 engine.items.add(sworld)
 
 world_image = pygame.Surface((7500, 3000))
+inv_image = pygame.Surface((288, 32))
 
 running = True
 while running:
@@ -70,23 +70,25 @@ while running:
                 if hero.mana - 50 >= 0:
                     engine.use_ability(hero, Ability.Heal)
                     hero.mana -= 50
+            if event.key == pygame.K_5:
+                engine.inv_add_item
     for punchenemy in enemies:
         engine.make_kick(punchenemy)
     keys = pygame.key.get_pressed()
     if keys[pygame.K_a]:
-        hero.vel = [-10, 0]
+        hero.vel = [-4, 0]
         hero.direction = [-10, 0]
         # engine.update_players()
     if keys[pygame.K_d]:
-        hero.vel = [10, 0]
+        hero.vel = [4, 0]
         hero.direction = [10, 0]
         # engine.update_players()
     if keys[pygame.K_w]:
-        hero.vel = [0, -10]
+        hero.vel = [0, -4]
         hero.direction = [0, -10]
         # engine.update_players()
     if keys[pygame.K_s]:
-        hero.vel = [0, 10]
+        hero.vel = [0, 4]
         hero.direction = [0, 10]
         # engine.update_players()
     hp_bar.update_bar(hero.health)
@@ -100,6 +102,7 @@ while running:
         if hero.health + hero.stats[0] <= hp_bar.true_vaule:
             hero.health += hero.stats[0]
         hero.regen_time = 0
+    inv = engine.make_screen_to_inv_screen([9, 1], inv_image, 32, slot_image)
     engine.draw(world_image)
     for movenemy in enemies:
         ai.path_to_player(hero, movenemy)
@@ -111,6 +114,8 @@ while running:
             min(-hero.pos[1] + 300, 0)
         )
     )
+    screen.blit(inv, [1, 1])
+    engine.draw_inv_item(screen)
     screen.blit(hero_im, [10, 510])
     hp_bar.draw_X_Bar([0, 200, 0], screen)
     mana_bar.draw_X_Bar([0, 0, 200], screen)
@@ -119,5 +124,5 @@ while running:
         hero.damage += sworld.damage
         sworld.kill()
     pygame.display.flip()
-    clock.tick(30)
+    clock.tick(60)
 pygame.quit()

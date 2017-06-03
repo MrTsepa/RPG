@@ -10,6 +10,9 @@ class Engine:
         self.map = level1
         self.items = pygame.sprite.Group()
         self.bullets = pygame.sprite.Group()
+        self.inventar_items = pygame.sprite.Group()
+        self.freeslots = []
+
     def update_players(self):
         player_poses = [p.pos for p in self.players]
         item_poses = [p.pos for p in self.items]
@@ -22,7 +25,39 @@ class Engine:
                 continue
             if [x1, y1] in item_poses:
                 continue
-
+            first_point_X = player.pixelpos[0]
+            first_point_Y = player.pixelpos[1]
+            if player.vel[0] != 0 or player.vel[1] != 0:
+                if player.vel[0] > 0:
+                    if player.vel[1] == 0:
+                        if player.pixelpos[0] != first_point_X + SIZE:
+                            player.pos[0] += player.vel[0]
+                    if player.vel[1] > 0:
+                        if player.pixelpos[0] != first_point_X + SIZE:
+                            player.pos[0] += player.vel[0]
+                        if player.pixelpos[1] != first_point_Y + SIZE:
+                            player.pos[1] += player.vel[1]
+                if player.vel[0] == 0:
+                    if player.vel[1] > 0:
+                        if player.pixelpos[1] != first_point_Y + SIZE:
+                            player.pos[1] += player.vel[1]
+                if player.vel[0] < 0:
+                    if player.vel[1] == 0:
+                        if player.pixelpos[0] != first_point_X - SIZE:
+                            player.pos[0] -= player.vel[0]
+                    if player.vel[1] < 0:
+                        if player.pixelpos[0] != first_point_X - SIZE:
+                            player.pos[0] -= player.vel[0]
+                        if player.pixelpos[1] != first_point_Y - SIZE:
+                            player.pos[1] -= player.vel[1]
+                if player.vel[0] == 0:
+                    if player.vel[1] < 0:
+                        if player.pixelpos[1] != first_point_Y - SIZE:
+                            player.pos[1] -= player.vel[1]
+            if player.pixelpos[0] % SIZE == 0:
+                player.vel[0] = 0
+            if player.pixelpos[1] % SIZE == 0:
+                player.vel[1] = 0
             #bullet_hit = pygame.sprite.spritecollideany(player, self.bullets)
             #if bullet_hit is not None:
             #    if player != bullet_hit.shooter:
@@ -30,16 +65,7 @@ class Engine:
             #        player.health -= bullet_hit.damage
             if player.debuff == 'iced':
                 player.vel = [0, 0]
-            first_point_X = player.pos[0] //SIZE
-            first_point_Y = player.pos[0] //SIZE
-            if player.pos [1] // 20 != first_point_X + 1:
-                player.pos[0] += player.vel[0]
-            if player.pos[1] // 20 != first_point_Y + 1:
-                player.pos[1] += player.vel[1]
-            if player.pos [1] // 20 != first_point_X - 1:
-                player.pos[0] += player.vel[0]
-            if player.pos[1] // 20 != first_point_Y - 1:
-                player.pos[1] += player.vel[1]
+
         for bullet in self.bullets:
             bullet.pos[0] += bullet.direction[0] * bullet.vel
             bullet.pos[1] += bullet.direction[1] * bullet.vel
@@ -51,6 +77,11 @@ class Engine:
                             player.health -= bullet.damage
                         if bullet.speciffic == 'ice':
                             player.debuff = 'iced'
+
+    def draw_inv_item(self, screen):
+        for item in self.inventar_items:
+            item.draw(screen)
+
     def make_kick(self, player):
         for target in self.players:
             if (
@@ -90,6 +121,20 @@ class Engine:
         if type == Ability.Heal:
             player.health += 50
 
+    def make_screen_to_inv_screen(self, slots_count, screen, slot_size, slot_image):
+        for y in range(0, slots_count[1]):
+            for x in range(0, slots_count[0]):
+                screen.blit(slot_image, [x * slot_size, y * slot_size])
+        return screen
+
+    def inv_add_item(self, item, inv_image):
+        item = InvItem(item.id, inv_image)
+        a = 0
+        for freeslot in self.freeslots:
+            if freeslot[0] == item.pos[0] * 32 and freeslot[1] == item.pos[1] * 32:
+                self.inventar_items.add(item)
+                self.freeslots.pop(a)
+            a += 1
     def draw(self, screen):
         y = 0
         for line in self.map:

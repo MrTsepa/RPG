@@ -18,3 +18,4 @@ tree_desert_im = pygame.image.load(os.path.join(IMAGES_DIR, 'des_tree.png')).con
 hero_hp_bar =  pygame.image.load(os.path.join(IMAGES_DIR, 'HeroBar.png')).convert_alpha()
 hero_im =  pygame.image.load(os.path.join(IMAGES_DIR, 'Hero_im.png')).convert_alpha()
 ss_image = pygame.image.load(os.path.join(IMAGES_DIR, 'Hero.png')).convert_alpha()
+slot_image = pygame.image.load(os.path.join(IMAGES_DIR, 'slot.png')).convert_alpha()

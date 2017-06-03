@@ -27,12 +27,13 @@ class Player(pygame.sprite.Sprite):
         self.debuff = 'None'
         self.pos = [self.tpos[0] * SIZE, self.tpos[1] * SIZE]
         self.rect = pygame.Rect(self.pos, [SIZE, SIZE])
+        self.pixelpos = [pos[0] * SIZE, pos[1] * SIZE]
 
     def get_damage(self):
         return 2 + sum([item.damage for item in self.h_items])
 
     def draw(self, screen):
-
+        self.pixelpos = [self.pos[0] * SIZE, self.pos[1] * SIZE]
         if self.direction == [0, -1]:
             self.image = self.images[9]
         if self.direction == [0, 1]:
@@ -45,10 +46,11 @@ class Player(pygame.sprite.Sprite):
 
 
 class Item(pygame.sprite.Sprite):
-    def __init__(self, pos, image):
+    def __init__(self, pos, image, id):
         pygame.sprite.Sprite.__init__(self)
         self.pos = pos
         self.image = image
+        self.id = id
         pixel_pos = (
             self.pos[0] * SIZE,
             self.pos[1] * SIZE
@@ -65,12 +67,12 @@ class Item(pygame.sprite.Sprite):
 
 class Scrolls(Item):
     def __init__(self, pos, image):
-        Item.__init__(self, pos, image)
+        Item.__init__(self, pos, image, id)
 
 
 class Weapon(Item):
     def __init__(self, pos, damage, image):
-        Item.__init__(self, pos, image)
+        Item.__init__(self, pos, image, id)
         self.damage = damage
 
 
@@ -89,6 +91,20 @@ class Bullet(pygame.sprite.Sprite):
             self.pos[1] * SIZE
         )
         self.rect = pygame.Rect(pixel_pos, [SIZE, SIZE])
+
+    def draw(self, screen):
+        pixel_pos = (
+            self.pos[0] * SIZE,
+            self.pos[1] * SIZE
+        )
+        screen.blit(self.image, pixel_pos)
+
+
+class InvItem(pygame.sprite.Sprite):
+    def __init__(self, id, image):
+        pygame.sprite.Sprite.__init__(self)
+        self.id = id
+        self.image = image
 
     def draw(self, screen):
         pixel_pos = (
